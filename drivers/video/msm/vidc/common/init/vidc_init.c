@@ -708,11 +708,11 @@ u32 vidc_insert_addr_table(struct video_client_ctx *client_ctx,
 						mapped_length,
 						(unsigned long *) &iova,
 						(unsigned long *) &buffer_size,
-						UNCACHED,
-						ION_IOMMU_UNMAP_DELAYED);
-				if (ret) {
-					ERR("%s():ION iommu map fail\n",
-					 __func__);
+						0, 0);
+				if (ret || !iova) {
+					ERR(
+					"%s():ION iommu map fail, ret = %d, iova = 0x%lx\n",
+						__func__, ret, iova);
 					goto ion_map_error;
 				}
 				phys_addr = iova;
