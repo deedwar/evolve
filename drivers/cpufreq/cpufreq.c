@@ -29,6 +29,7 @@
 #include <linux/completion.h>
 #include <linux/mutex.h>
 #include <linux/syscore_ops.h>
+#include <linux/sched.h>
 
 #include <trace/events/power.h>
 
@@ -407,10 +408,20 @@ static ssize_t show_##file_name				\
 }
 
 show_one(cpuinfo_min_freq, cpuinfo.min_freq);
-show_one(cpuinfo_max_freq, cpuinfo.max_freq);
 show_one(cpuinfo_transition_latency, cpuinfo.transition_latency);
 show_one(scaling_min_freq, min);
 show_one(scaling_max_freq, max);
+
+static ssize_t show_cpuinfo_max_freq(struct cpufreq_policy *policy, char *buf)
+{
+	unsigned int newfreq = 0;
+	if (!strcmp(current->comm, "thermald")) {
+		newfreq = max(policy->max, (unsigned int)1512000);
+		pr_info("[imoseyon] thermald read maxfreq %d!\n", newfreq);
+	} else newfreq = policy->cpuinfo.max_freq;
+	return sprintf(buf, "%u\n", newfreq);
+}
+
 show_one(scaling_cur_freq, cur);
 show_one(cpu_utilization, util);
 
@@ -445,8 +456,58 @@ static ssize_t store_##file_name					\
 	return ret ? ret : count;					\
 }
 
+#ifdef CONFIG_SEC_DVFS
+static ssize_t store_scaling_min_freq
+(struct cpufreq_policy *policy, const char *buf, size_t count)
+{
+	unsigned int ret = -EINVAL;
+	unsigned int value = 0;
+
+	ret = sscanf(buf, "%u", &value);
+	if (ret != 1)
+		return -EINVAL;
+
+	if (policy->cpu == BOOT_CPU) {
+		if (value <= MIN_FREQ_LIMIT)
+			cpufreq_set_limit_defered(USER_MIN_STOP, value);
+		else if (value <= MAX_FREQ_LIMIT)
+			cpufreq_set_limit_defered(USER_MIN_START, value);
+	}
+
+	return count;
+}
+
+static ssize_t store_scaling_max_freq
+	(struct cpufreq_policy *policy, const char *buf, size_t count)
+{
+	unsigned int ret = -EINVAL;
+	unsigned int value = 0;
+
+	ret = sscanf(buf, "%u", &value);
+	if (ret != 1)
+		return -EINVAL;
+
+	// restart thermald when something else changes maxfreq
+        if (strcmp(current->comm, "thermald")) {
+		struct task_struct *tsk;
+		for_each_process(tsk)
+		  if (!strcmp(tsk->comm,"thermald")) send_sig(SIGKILL, tsk, 0);
+		pr_info("[imoseyon] thermald restarting.\n");
+	}
+
+	if (policy->cpu == BOOT_CPU) {
+		if (value >= MAX_FREQ_LIMIT)
+			cpufreq_set_limit_defered(USER_MAX_STOP, value);
+		else if (value >= MIN_FREQ_LIMIT)
+			cpufreq_set_limit_defered(USER_MAX_START, value);
+	}
+
+	return count;
+}
+#else
 store_one(scaling_min_freq, min);
 store_one(scaling_max_freq, max);
+#endif
 
 /**
  * show_cpuinfo_cur_freq - current CPU frequency as detected by hardware
