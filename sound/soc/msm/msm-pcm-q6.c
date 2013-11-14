@@ -678,7 +678,7 @@ static int msm_pcm_hw_params(struct snd_pcm_substream *substream,
 		msm_pcm_routing_reg_phy_stream(soc_prtd->dai_link->be_id,
 			prtd->audio_client->perf_mode,
 			prtd->session_id, substream->stream);
-	}
+		}
 
 	ret = q6asm_audio_client_buf_alloc_contiguous(dir,
 			prtd->audio_client,
