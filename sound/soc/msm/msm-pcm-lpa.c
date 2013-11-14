@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -117,6 +117,9 @@ static void event_handler(uint32_t opcode,
 		if (runtime->status->hw_ptr >= runtime->control->appl_ptr) {
 			runtime->render_flag |= SNDRV_RENDER_STOPPED;
 			stop_playback = 1;
+			atomic_set(&prtd->pending_buffer, 1);
+			pr_debug("%s:lpa driver underrun\n", __func__);
+			break;
 		}
 		snd_pcm_stream_unlock_irq(substream);
 		if (stop_playback) {
@@ -277,7 +280,6 @@ static int msm_pcm_restart(struct snd_pcm_substream *substream)
 	pr_err("%s\n", __func__);
 	if (runtime->render_flag & SNDRV_RENDER_STOPPED) {
 		buf = prtd->audio_client->port[IN].buf;
-
 		pr_debug("%s:writing %d bytes of buffer[%d] to dsp 2\n",
 				__func__, prtd->pcm_count, prtd->out_head);
 		pr_debug("%s:writing buffer[%d] from 0x%08x\n",
@@ -300,15 +302,14 @@ static int msm_pcm_restart(struct snd_pcm_substream *substream)
 			 output_meta_data.timestamp_msw,
 			 output_meta_data.timestamp_lsw);
 
-		param.paddr = (unsigned long)buf[0].phys +
-				(prtd->out_head * prtd->pcm_count) +
-				output_meta_data.meta_data_length;
-		param.msw_ts = output_meta_data.timestamp_msw;
-		param.lsw_ts = output_meta_data.timestamp_lsw;
+		param.paddr = (unsigned long)buf[0].phys
+				+ (prtd->out_head * prtd->pcm_count);
+		param.len = prtd->pcm_count;
+		param.msw_ts = 0;
+		param.lsw_ts = 0;
 		param.flags = NO_TIMESTAMP;
-		param.uid =  (unsigned long)buf[0].phys +
-				(prtd->out_head * prtd->pcm_count +
-				output_meta_data.meta_data_length);
+		param.uid =  (unsigned long)buf[0].phys
+				+ (prtd->out_head * prtd->pcm_count);
 		if (q6asm_async_write(prtd->audio_client, &param) < 0)
 			pr_err("%s:q6asm_async_write failed\n",
 			__func__);
