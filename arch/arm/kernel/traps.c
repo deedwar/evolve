@@ -37,7 +37,19 @@
 
 #include "signal.h"
 
+<<<<<<< HEAD
 static const char *handler[]= { "prefetch abort", "data abort", "address exception", "interrupt" };
+=======
+#include <trace/events/exception.h>
+
+static const char *handler[]= {
+	"prefetch abort",
+	"data abort",
+	"address exception",
+	"interrupt",
+	"undefined instruction",
+};
+>>>>>>> 9fa6910... Squashed update of kernel from 3.4.76 to 3.4.77
 
 void *vectors_page;
 
