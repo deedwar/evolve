@@ -2438,23 +2438,6 @@ config PM8921_MIC_BIAS
           Provides support for activate pm8921 mic bias driver used for
           primary and secondary mic.
 
-choice
-    prompt "SWIQI"
-    optional
-    default n
-    config SEMC_SWIQI
-        bool "Enable SWIQI"
-        default n
-        help
-          This enables SWIQI.
-
-    config SONY_SWIQI2
-        bool "Enable SWIQI2"
-        default n
-        help
-          This enables SWIQI2.
-endchoice
-
 config SIMPLE_REMOTE_PLATFORM
         bool "Simple Remote platform specific driver"
         default n
