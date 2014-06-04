@@ -1,2 +1,0 @@
-sudo fastboot flash boot ~/dev/ramdisk/kernel.elf
-sudo fastboot reboot
