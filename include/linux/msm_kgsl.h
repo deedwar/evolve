@@ -121,7 +121,6 @@ enum kgsl_ctx_reset_stat {
 #ifdef CONFIG_NOZOMI_GPU_SCALING
 #define KGSL_MAX_PWRLEVELS 10
 #else 
-#define KGSL_MAX_PWRLEVELS 5
 #endif
 
 #define KGSL_CONVERT_TO_MBPS(val) \
