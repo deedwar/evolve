@@ -47,7 +47,7 @@
 #define L_VAL_SCPLL_CAL_MIN	0x08 /* =  432 MHz with 27MHz source */
 
 #define MAX_VDD_SC		1350000 /* uV */
-#define MIN_VDD_SC	       800000 /* uV */
+#define MIN_VDD_SC	       775000 /* uV */
 #define MAX_VDD_MEM		1350000 /* uV */
 #define MAX_VDD_DIG		1200000 /* uV */
 #define MAX_AXI			 310500 /* KHz */
@@ -159,6 +159,7 @@ static struct msm_bus_paths bw_level_tbl[] = {
 	[1] = BW_MBPS(1336), /* At least 167 MHz on bus. */
 	[2] = BW_MBPS(2008), /* At least 251 MHz on bus. */
 	[3] = BW_MBPS(2480), /* At least 310 MHz on bus. */
+	[4] = BW_MBPS(3200), /* At least 360 MHz on bus. */
 };
 
 static struct msm_bus_scale_pdata bus_client_pdata = {
@@ -192,6 +193,9 @@ static struct clkctl_l2_speed l2_freq_tbl_v2[] = {
 	[17] = {1296000,  1, 0x18, 1200000, 1225000, 3},
 	[18] = {1350000,  1, 0x19, 1200000, 1225000, 3},
 	[19] = {1404000,  1, 0x1A, 1200000, 1250000, 3},
+	[20] = {1458000,  1, 0x1B, 1200000, 1250000, 4},
+	[21] = {1512000,  1, 0x1C, 1200000, 1250000, 4},
+	[22] = {1566000,  1, 0x1D, 1200000, 1250000, 4},
 };
 
 #define L2(x) (&l2_freq_tbl_v2[(x)])
@@ -764,7 +768,7 @@ static void __init bus_init(void)
 }
 
 #ifdef CONFIG_CPU_FREQ_MSM
-static struct cpufreq_frequency_table freq_table[NR_CPUS][30];
+static struct cpufreq_frequency_table freq_table[NR_CPUS][31];
 
 static void __init cpufreq_table_init(void)
 {

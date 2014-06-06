@@ -118,7 +118,12 @@ enum kgsl_ctx_reset_stat {
 	KGSL_CTX_STAT_UNKNOWN_CONTEXT_RESET_EXT		= 0x00000003
 };
 
+#ifdef CONFIG_NOZOMI_GPU_SCALING
+#define KGSL_MAX_PWRLEVELS 10
+#else 
 #define KGSL_MAX_PWRLEVELS 5
+#endif
+
 #define KGSL_CONVERT_TO_MBPS(val) \
 	(val*1000*1000U)
 
