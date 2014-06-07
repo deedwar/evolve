@@ -2780,4 +2780,9 @@ config FORCE_FAST_CHARGE
 		A simple sysfs interface to force adapters that
 		are detected as USB to charge as AC.
 
+config NOZOMI_GPU_SCALING
+	bool "Enable GPU 2D scaling for the Sony Xperia S"
+	depends on ARCH_MSM8X60
+	default y
+
 endif
