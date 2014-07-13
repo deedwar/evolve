@@ -2385,7 +2385,7 @@ static struct msm_i2c_ssbi_platform_data msm_ssbi3_pdata = {
 #define MSM_FB_EXT_BUF_SIZE \
 		(roundup((720 * 576 * 2), 4096) * 2) /* 2 bpp x 2 pages */
 #else
-#define MSM_FB_EXT_BUFT_SIZE	0
+#define MSM_FB_EXT_BUF_SIZE	0
 #endif
 
 /* Note: must be multiple of 4096 */
@@ -2822,7 +2822,7 @@ static int hdmi_core_power(int on, int show);
 static int hdmi_gpio_config(int on);
 static int hdmi_cec_power(int on);
 static int hdmi_panel_power(int on);
-
+#ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
 static struct msm_hdmi_platform_data hdmi_msm_data = {
 	.irq = HDMI_IRQ,
 	.enable_5v = hdmi_enable_5v,
@@ -2831,7 +2831,7 @@ static struct msm_hdmi_platform_data hdmi_msm_data = {
 	.panel_power = hdmi_panel_power,
 	.gpio_config = hdmi_gpio_config,
 };
-
+#endif
 static struct platform_device hdmi_msm_device = {
 	.name = "hdmi_msm",
 	.id = 0,
@@ -7438,10 +7438,11 @@ static struct msm_bus_scale_pdata dtv_bus_scale_pdata = {
 	ARRAY_SIZE(dtv_bus_scale_usecases),
 	.name = "dtv",
 };
-
 static struct lcdc_platform_data dtv_pdata = {
 	.bus_scale_table = &dtv_bus_scale_pdata,
+#ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
 	.lcdc_power_save = hdmi_panel_power,
+#endif
 };
 
 static struct msm_bus_paths dtv_hdmi_prim_bus_scale_usecases[] = {
