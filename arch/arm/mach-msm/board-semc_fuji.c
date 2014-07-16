@@ -2443,7 +2443,7 @@ unsigned char hdmi_is_primary;
 #endif
 
 #define MSM_MM_FW_SIZE		(0x200000 - MSM_ION_HOLE_SIZE) /*(2MB-128KB)*/
-#define MSM_ION_MM_SIZE		0x5C00000  /* (88MB) */
+#define MSM_ION_MM_SIZE		0x5F00000  /* (88MB) */
 #define MSM_ION_MFC_SIZE	SZ_8K
 
 #define MSM_MM_FW_BASE		MSM_SMI_BASE
