@@ -38,7 +38,7 @@
 #define STEREO_DATA_SIZE        (MONO_DATA_SIZE * 2)
 #define CAPTURE_DMASZ           (FRAME_SIZE * FRAME_NUM)
 
-#define BUFSZ			(960 * 5)
+#define BUFSZ			(5248)
 #define PLAYBACK_DMASZ 		(BUFSZ * 2)
 
 #define MSM_PLAYBACK_DEFAULT_VOLUME 0 /* 0dB */
