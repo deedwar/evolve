@@ -396,8 +396,10 @@ int kgsl_mmu_init(struct kgsl_device *device)
 		goto done;
 	} else if (KGSL_MMU_TYPE_GPU == kgsl_mmu_type)
 		mmu->mmu_ops = &gpummu_ops;
+#ifdef CONFIG_MSM_IOMMU
 	else if (KGSL_MMU_TYPE_IOMMU == kgsl_mmu_type)
 		mmu->mmu_ops = &iommu_ops;
+#endif
 
 	status =  mmu->mmu_ops->mmu_init(mmu);
 done:
@@ -521,8 +523,10 @@ static struct kgsl_pagetable *kgsl_mmu_createpagetableobject(
 
 	if (KGSL_MMU_TYPE_GPU == kgsl_mmu_type)
 		pagetable->pt_ops = &gpummu_pt_ops;
+#ifdef CONFIG_MSM_IOMMU
 	else if (KGSL_MMU_TYPE_IOMMU == kgsl_mmu_type)
 		pagetable->pt_ops = &iommu_pt_ops;
+#endif
 
 	pagetable->priv = pagetable->pt_ops->mmu_create_pagetable();
 	if (!pagetable->priv)
