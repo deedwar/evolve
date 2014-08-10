@@ -10,7 +10,7 @@ clear
 
 # Pure Kernel Version
 BASE_AK_VER="evolve"
-VER="-1.21"
+VER="-1.23"
 AK_VER=$BASE_AK_VER$VER
 
 # AK Variables
@@ -98,6 +98,7 @@ echo "-------------------------"
 echo -e "${restore}"
 
 cp -vr $OUTPUT_DIR/`echo $AK_VER`.zip ~/kernel/
+cp -vr $OUTPUT_DIR/ boot.img ~/kernel/
 echo
 
 cd $ANYKERNEL_DIR
