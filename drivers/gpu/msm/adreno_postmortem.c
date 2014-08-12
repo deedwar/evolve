@@ -23,7 +23,6 @@
 #include "kgsl_pwrctrl.h"
 
 #include "a2xx_reg.h"
-#include "a3xx_reg.h"
 
 #define INVALID_RB_CMD 0xaaaaaaaa
 #define NUM_DWORDS_OF_RINGBUFFER_HISTORY 100
@@ -465,38 +464,6 @@ static void adreno_dump_a3xx(struct kgsl_device *device)
 		adreno_dump_fields(device, " CP_STT=", lns, ARRAY_SIZE(lns));
 	}
 #endif
-
-	kgsl_regread(device, A3XX_RBBM_INT_0_STATUS, &r1);
-	KGSL_LOG_DUMP(device, "MSTR_INT_SGNL = %08X\n", r1);
-	{
-		struct log_field ints[] = {
-			{r1 & BIT(0),  "RBBM_GPU_IDLE 0"},
-			{r1 & BIT(1),  "RBBM_AHB_ERROR 1"},
-			{r1 & BIT(2),  "RBBM_REG_TIMEOUT 2"},
-			{r1 & BIT(3),  "RBBM_ME_MS_TIMEOUT 3"},
-			{r1 & BIT(4),  "RBBM_PFP_MS_TIMEOUT 4"},
-			{r1 & BIT(5),  "RBBM_ATB_BUS_OVERFLOW 5"},
-			{r1 & BIT(6),  "VFD_ERROR 6"},
-			{r1 & BIT(7),  "CP_SW_INT 7"},
-			{r1 & BIT(8),  "CP_T0_PACKET_IN_IB 8"},
-			{r1 & BIT(9),  "CP_OPCODE_ERROR 9"},
-			{r1 & BIT(10), "CP_RESERVED_BIT_ERROR 10"},
-			{r1 & BIT(11), "CP_HW_FAULT 11"},
-			{r1 & BIT(12), "CP_DMA 12"},
-			{r1 & BIT(13), "CP_IB2_INT 13"},
-			{r1 & BIT(14), "CP_IB1_INT 14"},
-			{r1 & BIT(15), "CP_RB_INT 15"},
-			{r1 & BIT(16), "CP_REG_PROTECT_FAULT 16"},
-			{r1 & BIT(17), "CP_RB_DONE_TS 17"},
-			{r1 & BIT(18), "CP_VS_DONE_TS 18"},
-			{r1 & BIT(19), "CP_PS_DONE_TS 19"},
-			{r1 & BIT(20), "CACHE_FLUSH_TS 20"},
-			{r1 & BIT(21), "CP_AHB_ERROR_HALT 21"},
-			{r1 & BIT(24), "MISC_HANG_DETECT 24"},
-			{r1 & BIT(25), "UCHE_OOB_ACCESS 25"},
-		};
-		adreno_dump_fields(device, "INT_SGNL=", ints, ARRAY_SIZE(ints));
-	}
 }
 
 static void adreno_dump_a2xx(struct kgsl_device *device)
@@ -890,14 +857,6 @@ int adreno_dump(struct kgsl_device *device, int manual)
 		else if (adreno_is_a225(adreno_dev))
 			adreno_dump_regs(device, a225_registers,
 				a225_registers_count);
-		else if (adreno_is_a3xx(adreno_dev)) {
-			adreno_dump_regs(device, a3xx_registers,
-					a3xx_registers_count);
-
-			if (adreno_is_a330(adreno_dev))
-				adreno_dump_regs(device, a330_registers,
-					a330_registers_count);
-		}
 	}
 
 error_vfree:
