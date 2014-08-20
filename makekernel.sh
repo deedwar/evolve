@@ -9,8 +9,8 @@ restore='\033[0m'
 clear
 
 # Pure Kernel Version
-BASE_AK_VER="evolve"
-VER="-1.23"
+BASE_AK_VER="rebase"
+VER="-0.8"
 AK_VER=$BASE_AK_VER$VER
 
 # AK Variables
